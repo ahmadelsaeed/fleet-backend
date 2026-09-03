@@ -17,6 +17,9 @@ class StationsIndex extends OA\Get
             operationId: 'stationsIndex',
             summary: 'List stations',
             tags: ['Stations'],
+            security: [
+                ['sanctum' => []],
+            ],
             responses: [
                 new SuccessResponse(
                     description: 'Stations retrieved successfully',

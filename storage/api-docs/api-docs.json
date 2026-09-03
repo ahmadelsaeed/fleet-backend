@@ -4,7 +4,7 @@
         "title": "Company - Service",
         "description": "Service documentation",
         "contact": {
-            "email": "admin@admin.com"
+            "email": "ahmad.elsaeed.ali@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://bus.test/",
+            "url": "https://bus.test",
             "description": "Demo API Server"
         }
     ],
@@ -166,7 +166,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/register": {
@@ -317,7 +322,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -396,7 +406,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/bookings/{booking}": {
@@ -478,7 +493,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -558,7 +578,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/me": {
@@ -628,7 +653,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/stations": {
@@ -699,7 +729,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/trips": {
@@ -1234,10 +1269,10 @@
         },
         "securitySchemes": {
             "sanctum": {
-                "type": "http",
-                "description": "Laravel Sanctum bearer token. Format: Bearer {token}",
-                "bearerFormat": "token",
-                "scheme": "bearer"
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
             }
         }
     },

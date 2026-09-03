@@ -16,6 +16,9 @@ class Me extends OA\Get
             path: '/api/v1/me',
             operationId: 'profileMe',
             summary: 'Get authenticated user profile',
+            security: [
+                ['sanctum' => []],
+            ],
             tags: ['Profile'],
             responses: [
                 new SuccessResponse(

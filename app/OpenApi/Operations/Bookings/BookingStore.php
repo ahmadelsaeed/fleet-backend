@@ -18,6 +18,9 @@ class BookingStore extends OA\Post
             operationId: 'bookingsStore',
             summary: 'Create a booking',
             tags: ['Bookings'],
+            security: [
+                ['sanctum' => []],
+            ],
             requestBody: new OA\RequestBody(
                 required: true,
                 content: new OA\JsonContent(ref: BookingStoreRequest::class),

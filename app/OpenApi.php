@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
     version: '1.0.0',
     title: 'Company - Service',
     description: 'Service documentation',
-    contact: new OA\Contact(email: 'admin@admin.com'),
+    contact: new OA\Contact(email: 'ahmad.elsaeed.ali@gmail.com'),
     license: new OA\License(
         name: 'Apache 2.0',
         url: 'https://www.apache.org/licenses/LICENSE-2.0.html'

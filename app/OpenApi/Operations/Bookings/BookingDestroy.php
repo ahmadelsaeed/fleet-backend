@@ -17,6 +17,9 @@ class BookingDestroy extends OA\Delete
             operationId: 'bookingsDestroy',
             summary: 'Cancel a booking',
             tags: ['Bookings'],
+            security: [
+                ['sanctum' => []],
+            ],
             parameters: [
                 new OA\PathParameter(name: 'booking', description: 'Booking id', required: true, schema: new OA\Schema(type: 'integer')),
             ],

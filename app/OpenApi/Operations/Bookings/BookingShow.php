@@ -17,6 +17,9 @@ class BookingShow extends OA\Get
             operationId: 'bookingsShow',
             summary: 'Get booking details',
             tags: ['Bookings'],
+            security: [
+                ['sanctum' => []],
+            ],
             parameters: [
                 new OA\PathParameter(name: 'booking', description: 'Booking id', required: true, schema: new OA\Schema(type: 'integer')),
             ],

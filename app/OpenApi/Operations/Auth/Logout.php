@@ -16,6 +16,9 @@ class Logout extends OA\Post
             path: '/api/v1/logout',
             operationId: 'authLogout',
             summary: 'Logout user',
+            security: [
+                ['sanctum' => []],
+            ],
             tags: ['Auth'],
             responses: [
                 new SuccessResponse(

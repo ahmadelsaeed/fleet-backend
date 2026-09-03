@@ -17,6 +17,9 @@ class BookingsIndex extends OA\Get
             operationId: 'bookingsIndex',
             summary: 'List user bookings',
             tags: ['Bookings'],
+            security: [
+                ['sanctum' => []],
+            ],
             responses: [
                 new SuccessResponse(
                     description: 'Bookings retrieved successfully',
