@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
+use Database\Factories\TripFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[Fillable(['code', 'bus_id', 'date'])]
+#[UseFactory(TripFactory::class)]
 class Trip extends Model
 {
-    use HasFactory, SoftDeletes;
-
-    protected $fillable = ['code', 'bus_id', 'date'];
+    use SoftDeletes;
 
     protected $casts = ['date' => 'date'];
 

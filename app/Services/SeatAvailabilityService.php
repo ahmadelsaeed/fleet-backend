@@ -12,12 +12,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SeatAvailabilityService
 {
-    /**
-     * Return all seats on the trip's bus, each annotated with an is_available flag
-     * for the given [start, end) segment.
-     *
-     * @return Collection<int, Seat>
-     */
     public function availableSeats(Trip $trip, TripStop $start, TripStop $end): Collection
     {
         $this->guardStopsOnTrip($trip, $start, $end);
@@ -29,23 +23,13 @@ class SeatAvailabilityService
         });
     }
 
-    /**
-     * Return true when no active booking blocks this seat for [start, end).
-     */
     public function isSeatAvailable(Trip $trip, Seat $seat, TripStop $start, TripStop $end): bool
     {
         return ! $this->conflictExists($trip, $seat, $start->sequence_order, $end->sequence_order);
     }
 
-    /**
-     * Assert no conflict inside a DB transaction + lockForUpdate() guard.
-     *
-     * @throws SeatConflictException
-     */
     public function assertNoConflict(Trip $trip, Seat $seat, TripStop $start, TripStop $end): void
     {
-        // Acquire a pessimistic lock on all existing bookings for this seat+trip
-        // so concurrent requests cannot slip through between the read and the insert.
         Booking::query()
             ->where('trip_id', $trip->id)
             ->where('seat_id', $seat->id)
@@ -57,11 +41,6 @@ class SeatAvailabilityService
         }
     }
 
-    /**
-     * Validate that both stops belong to the trip and that start comes before end.
-     *
-     * @throws InvalidTripRouteException
-     */
     public function guardStopsOnTrip(Trip $trip, TripStop $start, TripStop $end): void
     {
         if ($start->trip_id !== $trip->id) {
@@ -77,11 +56,6 @@ class SeatAvailabilityService
         }
     }
 
-    /**
-     * Resolve a station_id to its TripStop on the given trip.
-     *
-     * @throws InvalidTripRouteException
-     */
     public function resolveTripStop(Trip $trip, int $stationId, string $label = 'station'): TripStop
     {
         $tripStop = TripStop::where('trip_id', $trip->id)
@@ -95,11 +69,6 @@ class SeatAvailabilityService
         return $tripStop;
     }
 
-    // ── private ───────────────────────────────────────────────────────────────
-
-    /**
-     * Core overlap check: existing.start < newEnd AND newStart < existing.end
-     */
     private function conflictExists(Trip $trip, Seat $seat, int $newStartOrder, int $newEndOrder): bool
     {
         return Booking::query()
