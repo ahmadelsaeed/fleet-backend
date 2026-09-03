@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 class Controller
 {
-    public function respondWithSuccess($message, $data = [], $statusCode = 200)
+    public function respondWithSuccess($message, $data = [], $statusCode = 200,$meta = null)
     {
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'data' => $data,
-        ], $statusCode);
+        $response = ['success' => true, 'message' => $message, 'data' => $data, ];
+
+        if (! empty($data)) {
+            $response['data'] = $data;
+        }
+
+        if ($meta) {
+            $response['meta'] = ['page' => $data->currentPage(), 'total_pages' => $data->lastPage()];
+        }
+
+        return response()->json($response, $statusCode);
     }
 
     public function respondWithError($message, $data = [], $statusCode = 400)

@@ -18,40 +18,22 @@ class TripController extends Controller
 {
     public function __construct(private readonly SeatAvailabilityService $availabilityService) {}
 
-    /**
-     * GET /trips — list all trips.
-     * Public endpoint, no authentication required.
-     */
     #[TripsIndex]
     public function index(): JsonResponse
     {
-        $trips = Trip::with(['bus', 'tripStops.station'])->get();
+        $trips = Trip::with(['bus', 'tripStops.station'])->paginate(10);
 
-        return $this->respondWithSuccess(
-            __('Trips retrieved successfully'),
-            ['trips' => TripResource::collection($trips)]
-        );
+        return $this->respondWithSuccess(__('Trips retrieved successfully'), TripResource::collection($trips),200,true);
     }
 
-    /**
-     * GET /trips/{trip} — show a single trip.
-     * Public endpoint, no authentication required.
-     */
     #[TripShow]
     public function show(Trip $trip): JsonResponse
     {
         $trip->load(['bus', 'tripStops.station']);
 
-        return $this->respondWithSuccess(
-            __('Trip retrieved successfully'),
-            ['trip' => new TripResource($trip)]
-        );
+        return $this->respondWithSuccess(__('Trip retrieved successfully'), ['trip' => new TripResource($trip)]);
     }
 
-    /**
-     * GET /trips/{trip}/available-seats?start_station_id=&end_station_id=
-     * Public endpoint, no authentication required.
-     */
     #[TripAvailableSeats]
     public function availableSeats(AvailableSeatsRequest $request, Trip $trip): JsonResponse
     {

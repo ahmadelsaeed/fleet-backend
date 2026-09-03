@@ -23,9 +23,6 @@ class BookingController extends Controller
 {
     public function __construct(private readonly SeatAvailabilityService $availabilityService) {}
 
-    /**
-     * GET /bookings — list the authenticated user's bookings.
-     */
     #[BookingsIndex]
     public function index(Request $request): JsonResponse
     {
@@ -35,16 +32,9 @@ class BookingController extends Controller
             ->latest()
             ->get();
 
-        return $this->respondWithSuccess(
-            __('Bookings retrieved successfully'),
-            ['bookings' => BookingResource::collection($bookings)]
-        );
+        return $this->respondWithSuccess(__('Bookings retrieved successfully'), ['bookings' => BookingResource::collection($bookings)]);
     }
 
-    /**
-     * POST /bookings — create a booking for the authenticated user.
-     * Returns 409 if the seat is already taken for the requested segment.
-     */
     #[BookingStore]
     public function store(StoreBookingRequest $request): JsonResponse
     {
@@ -104,10 +94,6 @@ class BookingController extends Controller
         );
     }
 
-    /**
-     * GET /bookings/{booking} — show a single booking.
-     * Returns 403 if the booking does not belong to the authenticated user.
-     */
     #[BookingShow]
     public function show(Request $request, Booking $booking): JsonResponse
     {
@@ -117,16 +103,9 @@ class BookingController extends Controller
 
         $booking->load(['trip.bus', 'trip.tripStops.station', 'seat', 'startStop.station', 'endStop.station']);
 
-        return $this->respondWithSuccess(
-            __('Booking retrieved successfully'),
-            ['booking' => new BookingResource($booking)]
-        );
+        return $this->respondWithSuccess(__('Booking retrieved successfully'), ['booking' => new BookingResource($booking)]);
     }
 
-    /**
-     * DELETE /bookings/{booking} — cancel (soft-delete) a booking.
-     * Returns 403 if the booking does not belong to the authenticated user.
-     */
     #[BookingDestroy]
     public function destroy(Request $request, Booking $booking): JsonResponse
     {
