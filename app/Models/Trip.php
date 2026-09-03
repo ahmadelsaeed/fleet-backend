@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[UseFactory(TripFactory::class)]
 class Trip extends Model
 {
-    use SoftDeletes;
+    use  HasFactory, SoftDeletes;
 
     protected $casts = ['date' => 'date'];
 

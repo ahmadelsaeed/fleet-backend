@@ -9,7 +9,6 @@ use App\Models\TripStop;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-// ── Test fixture helper ──────────────────────────────────────────────────────
 
 function buildScenario(): array
 {
@@ -37,7 +36,6 @@ function buildScenario(): array
     return compact('bus', 'seats', 'trip', 'stations', 'stops');
 }
 
-// ── POST /bookings ─────────────────────────────────────────────────────────
 
 it('creates a booking successfully', function () {
     $user = User::factory()->create();
@@ -285,9 +283,7 @@ it('allows only one booking when two requests race for the same seat', function 
     $statuses = [$firstResponse->status(), $secondResponse->status()];
     sort($statuses);
 
-    // Exactly one 201 and one 409
     expect($statuses)->toBe([201, 409]);
 
-    // Exactly one row in the database
     expect(Booking::where('trip_id', $trip->id)->where('seat_id', $seat->id)->count())->toBe(1);
 });

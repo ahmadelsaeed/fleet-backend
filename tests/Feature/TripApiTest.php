@@ -8,13 +8,10 @@ use App\Models\Trip;
 use App\Models\TripStop;
 use App\Models\User;
 
-// ── Helper to build a minimal trip fixture ─────────────────────────────────
-
 function createTripWithRoute(array $stationNames): array
 {
     $bus = Bus::factory()->create(['seats_count' => 3]);
 
-    // Create seats with sequential numbers to avoid (bus_id, seat_number) conflicts
     $seats = collect(range(1, 3))->map(
         fn ($n) => Seat::factory()->create(['bus_id' => $bus->id, 'seat_number' => $n])
     );
@@ -36,38 +33,46 @@ function createTripWithRoute(array $stationNames): array
     return compact('bus', 'seats', 'trip', 'stations', 'stops');
 }
 
-// ── GET /trips ──────────────────────────────────────────────────────────────
-
 it('lists all trips with stops and bus', function () {
     createTripWithRoute(['Cairo', 'Al Fayyum', 'Asyut']);
 
-    $response = $this->getJson('/api/trips');
+    $response = $this->getJson('/api/v1/trips');
 
     $response->assertOk()
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('message', 'Trips retrieved successfully')
         ->assertJsonStructure([
+            'success',
+            'message',
             'data' => [
-                'trips' => [
-                    '*' => ['id', 'code', 'date', 'bus', 'trip_stops'],
+                '*' => [
+                    'id',
+                    'code',
+                    'date',
+                    'bus' => ['id', 'plate_number', 'seats_count'],
+                    'trip_stops' => [
+                        '*' => ['station' => ['id', 'name'], 'sequence_order'],
+                    ],
                 ],
             ],
+            'meta' => ['page', 'total_pages'],
         ]);
-});
 
-// ── GET /trips/{trip} ───────────────────────────────────────────────────────
+    $response->assertJsonPath('meta.page', 1)
+        ->assertJsonPath('meta.total_pages', 1);
+});
 
 it('shows a single trip', function () {
     ['trip' => $trip] = createTripWithRoute(['Cairo', 'Al Minya']);
 
-    $this->getJson("/api/trips/{$trip->id}")
+    $this->getJson("/api/v1/trips/{$trip->id}")
         ->assertOk()
         ->assertJsonPath('data.trip.id', $trip->id);
 });
 
 it('returns 404 for unknown trip', function () {
-    $this->getJson('/api/trips/9999')->assertNotFound();
+    $this->getJson('/api/v1/trips/9999')->assertNotFound();
 });
-
-// ── GET /trips/{trip}/available-seats ───────────────────────────────────────
 
 it('returns seat availability for a valid segment', function () {
     ['trip' => $trip, 'stations' => $stations] = createTripWithRoute(['Cairo', 'Al Fayyum', 'Asyut']);
@@ -75,7 +80,7 @@ it('returns seat availability for a valid segment', function () {
     $start = $stations->first();
     $end   = $stations->last();
 
-    $response = $this->getJson("/api/trips/{$trip->id}/available-seats?start_station_id={$start->id}&end_station_id={$end->id}");
+    $response = $this->getJson("/api/v1/trips/{$trip->id}/available-seats?start_station_id={$start->id}&end_station_id={$end->id}");
 
     $response->assertOk()
         ->assertJsonStructure([
@@ -93,10 +98,10 @@ it('returns seat availability for a valid segment', function () {
 it('rejects reversed station order with 422', function () {
     ['trip' => $trip, 'stations' => $stations] = createTripWithRoute(['Cairo', 'Al Fayyum', 'Asyut']);
 
-    $start = $stations->last();   // Asyut — later in route
-    $end   = $stations->first();  // Cairo  — earlier in route
+    $start = $stations->last();
+    $end   = $stations->first();
 
-    $this->getJson("/api/trips/{$trip->id}/available-seats?start_station_id={$start->id}&end_station_id={$end->id}")
+    $this->getJson("/api/v1/trips/{$trip->id}/available-seats?start_station_id={$start->id}&end_station_id={$end->id}")
         ->assertUnprocessable();
 });
 
@@ -104,7 +109,7 @@ it('rejects a station not on the trip route with 422', function () {
     ['trip' => $trip, 'stations' => $stations] = createTripWithRoute(['Cairo', 'Asyut']);
     $foreign = Station::factory()->create(['name' => 'Giza']);
 
-    $this->getJson("/api/trips/{$trip->id}/available-seats?start_station_id={$foreign->id}&end_station_id={$stations->last()->id}")
+    $this->getJson("/api/v1/trips/{$trip->id}/available-seats?start_station_id={$foreign->id}&end_station_id={$stations->last()->id}")
         ->assertUnprocessable();
 });
 
@@ -114,7 +119,6 @@ it('marks a seat as unavailable after a conflicting booking is made', function (
     $seat = $seats->first();
     $user = User::factory()->create();
 
-    // Book Cairo -> Asyut (full route) for seat 1
     Booking::create([
         'trip_id'            => $trip->id,
         'seat_id'            => $seat->id,
@@ -123,11 +127,10 @@ it('marks a seat as unavailable after a conflicting booking is made', function (
         'end_trip_stop_id'   => $stops->last()->id,
     ]);
 
-    // Now query availability for Cairo -> Al Fayyum
     $start = $stations->first();
     $end   = $stations->get(1);
 
-    $response = $this->getJson("/api/trips/{$trip->id}/available-seats?start_station_id={$start->id}&end_station_id={$end->id}");
+    $response = $this->getJson("/api/v1/trips/{$trip->id}/available-seats?start_station_id={$start->id}&end_station_id={$end->id}");
 
     $response->assertOk();
 
