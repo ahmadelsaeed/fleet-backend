@@ -21,7 +21,7 @@ class TripController extends Controller
     #[TripsIndex]
     public function index(): JsonResponse
     {
-        $trips = Trip::with(['bus', 'tripStops.station'])->paginate(10);
+        $trips = Trip::with(['bus', 'tripStops.station'])->whereDate('date', today())->paginate(10);
 
         return $this->respondWithSuccess(__('Trips retrieved successfully'), TripResource::collection($trips),200,true);
     }
