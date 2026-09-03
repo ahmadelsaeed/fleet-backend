@@ -8,6 +8,9 @@ use App\Http\Requests\AvailableSeatsRequest;
 use App\Http\Resources\SeatAvailabilityResource;
 use App\Http\Resources\TripResource;
 use App\Models\Trip;
+use App\OpenApi\Operations\Trips\TripAvailableSeats;
+use App\OpenApi\Operations\Trips\TripShow;
+use App\OpenApi\Operations\Trips\TripsIndex;
 use App\Services\SeatAvailabilityService;
 use Illuminate\Http\JsonResponse;
 
@@ -19,6 +22,7 @@ class TripController extends Controller
      * GET /trips — list all trips.
      * Public endpoint, no authentication required.
      */
+    #[TripsIndex]
     public function index(): JsonResponse
     {
         $trips = Trip::with(['bus', 'tripStops.station'])->get();
@@ -33,6 +37,7 @@ class TripController extends Controller
      * GET /trips/{trip} — show a single trip.
      * Public endpoint, no authentication required.
      */
+    #[TripShow]
     public function show(Trip $trip): JsonResponse
     {
         $trip->load(['bus', 'tripStops.station']);
@@ -47,6 +52,7 @@ class TripController extends Controller
      * GET /trips/{trip}/available-seats?start_station_id=&end_station_id=
      * Public endpoint, no authentication required.
      */
+    #[TripAvailableSeats]
     public function availableSeats(AvailableSeatsRequest $request, Trip $trip): JsonResponse
     {
         try {

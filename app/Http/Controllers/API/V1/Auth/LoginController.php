@@ -5,21 +5,21 @@ namespace App\Http\Controllers\API\V1\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\OpenApi\Operations\Auth\Login;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use OpenApi\Attributes as OAT;
-
 
 class LoginController extends Controller
 {
+    #[Login]
     public function __invoke(Request $request)
     {
-        $credentials = $request->validate(['login' => ['required'], 'password' => ['required', 'max:100'],]);
+        $credentials = $request->validate(['login' => ['required'], 'password' => ['required', 'max:100']]);
 
         $login_type = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
         $user = User::where($login_type, $credentials['login'])->first();
-        if (!$user) {
+        if (! $user) {
             return $this->respondWithError(trans('Invalid credentials'));
         }
 
@@ -29,8 +29,8 @@ class LoginController extends Controller
             return $this->respondWithError(trans('Invalid credentials'));
         }
 
-        $token = $user->createToken()->plainTextToken;;
+        $token = $user->createToken()->plainTextToken;
 
-        return $this->respondWithSuccess(__('Login Successfully'), ['user' => new UserResource($user),'token' => $token]);
+        return $this->respondWithSuccess(__('Login Successfully'), ['user' => new UserResource($user), 'token' => $token]);
     }
 }

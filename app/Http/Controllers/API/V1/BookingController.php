@@ -10,6 +10,10 @@ use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\Seat;
 use App\Models\Trip;
+use App\OpenApi\Operations\Bookings\BookingDestroy;
+use App\OpenApi\Operations\Bookings\BookingShow;
+use App\OpenApi\Operations\Bookings\BookingsIndex;
+use App\OpenApi\Operations\Bookings\BookingStore;
 use App\Services\SeatAvailabilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +26,7 @@ class BookingController extends Controller
     /**
      * GET /bookings — list the authenticated user's bookings.
      */
+    #[BookingsIndex]
     public function index(Request $request): JsonResponse
     {
         $bookings = $request->user()
@@ -40,6 +45,7 @@ class BookingController extends Controller
      * POST /bookings — create a booking for the authenticated user.
      * Returns 409 if the seat is already taken for the requested segment.
      */
+    #[BookingStore]
     public function store(StoreBookingRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -102,6 +108,7 @@ class BookingController extends Controller
      * GET /bookings/{booking} — show a single booking.
      * Returns 403 if the booking does not belong to the authenticated user.
      */
+    #[BookingShow]
     public function show(Request $request, Booking $booking): JsonResponse
     {
         if ($booking->user_id !== $request->user()->id) {
@@ -120,6 +127,7 @@ class BookingController extends Controller
      * DELETE /bookings/{booking} — cancel (soft-delete) a booking.
      * Returns 403 if the booking does not belong to the authenticated user.
      */
+    #[BookingDestroy]
     public function destroy(Request $request, Booking $booking): JsonResponse
     {
         if ($booking->user_id !== $request->user()->id) {

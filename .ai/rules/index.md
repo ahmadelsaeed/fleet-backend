@@ -6,3 +6,5 @@ Before planning or editing, find the row whose globs match the file's path and r
 | --- | --- |
 | app/Models/** | .ai/rules/models.md |
 | app/Services/** | .ai/rules/services.md |
+| app/OpenApi/** | .ai/rules/openapi.md |
+| app/Http/Controllers/** | .ai/rules/openapi.md |
