@@ -249,6 +249,318 @@
                 }
             }
         },
+        "/api/v1/bookings": {
+            "get": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "List user bookings",
+                "description": "GET /bookings — list the authenticated user's bookings.",
+                "operationId": "bookingsIndex",
+                "responses": {
+                    "200": {
+                        "description": "Bookings retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bookings retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/BookingsList"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Create a booking",
+                "description": "POST /bookings — create a booking for the authenticated user.\nReturns 409 if the seat is already taken for the requested segment.",
+                "operationId": "bookingsStore",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BookingStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Booking created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Booking"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - seat taken",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Seat already taken"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/bookings/{booking}": {
+            "get": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Get booking details",
+                "description": "GET /bookings/{booking} — show a single booking.\nReturns 403 if the booking does not belong to the authenticated user.",
+                "operationId": "bookingsShow",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Booking"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden or not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Cancel a booking",
+                "description": "DELETE /bookings/{booking} — cancel (soft-delete) a booking.\nReturns 403 if the booking does not belong to the authenticated user.",
+                "operationId": "bookingsDestroy",
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "description": "Booking id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Booking cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking cancelled successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/EmptyData"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/me": {
             "get": {
                 "tags": [
@@ -303,6 +615,330 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Unauthenticated"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stations": {
+            "get": {
+                "tags": [
+                    "Stations"
+                ],
+                "summary": "List stations",
+                "description": "GET /stations — list all stations.\nPublic endpoint, no authentication required.",
+                "operationId": "stationsIndex",
+                "responses": {
+                    "200": {
+                        "description": "Stations retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Stations retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationsList"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Request failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Request failed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trips": {
+            "get": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "List trips",
+                "description": "GET /trips — list all trips.\nPublic endpoint, no authentication required.",
+                "operationId": "tripsIndex",
+                "responses": {
+                    "200": {
+                        "description": "Trips retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Trips retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/TripsList"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Request failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Request failed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trips/{trip}": {
+            "get": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Get trip details",
+                "description": "GET /trips/{trip} — show a single trip.\nPublic endpoint, no authentication required.",
+                "operationId": "tripsShow",
+                "parameters": [
+                    {
+                        "name": "trip",
+                        "in": "path",
+                        "description": "Trip id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Trip retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Trip retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Trip"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Trip not found"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trips/{trip}/available-seats": {
+            "get": {
+                "tags": [
+                    "Trips"
+                ],
+                "summary": "Get available seats for a trip between two stations",
+                "description": "GET /trips/{trip}/available-seats?start_station_id=&end_station_id=\nPublic endpoint, no authentication required.",
+                "operationId": "tripsAvailableSeats",
+                "parameters": [
+                    {
+                        "name": "trip",
+                        "in": "path",
+                        "description": "Trip id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "start_station_id",
+                        "in": "query",
+                        "description": "Start station id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "end_station_id",
+                        "in": "query",
+                        "description": "End station id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Seat availability retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Seat availability retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SeatsAvailabilityResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid request"
                                         },
                                         "data": {
                                             "type": "array",
@@ -611,8 +1247,20 @@
             "description": "Authentication"
         },
         {
+            "name": "Bookings",
+            "description": "Bookings"
+        },
+        {
             "name": "Profile",
             "description": "Profile"
+        },
+        {
+            "name": "Stations",
+            "description": "Stations"
+        },
+        {
+            "name": "Trips",
+            "description": "Trips"
         }
     ]
 }
