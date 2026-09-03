@@ -260,7 +260,6 @@
                     "Bookings"
                 ],
                 "summary": "List user bookings",
-                "description": "GET /bookings — list the authenticated user's bookings.",
                 "operationId": "bookingsIndex",
                 "responses": {
                     "200": {
@@ -334,7 +333,6 @@
                     "Bookings"
                 ],
                 "summary": "Create a booking",
-                "description": "POST /bookings — create a booking for the authenticated user.\nReturns 409 if the seat is already taken for the requested segment.",
                 "operationId": "bookingsStore",
                 "requestBody": {
                     "required": true,
@@ -420,7 +418,6 @@
                     "Bookings"
                 ],
                 "summary": "Get booking details",
-                "description": "GET /bookings/{booking} — show a single booking.\nReturns 403 if the booking does not belong to the authenticated user.",
                 "operationId": "bookingsShow",
                 "parameters": [
                     {
@@ -505,7 +502,6 @@
                     "Bookings"
                 ],
                 "summary": "Cancel a booking",
-                "description": "DELETE /bookings/{booking} — cancel (soft-delete) a booking.\nReturns 403 if the booking does not belong to the authenticated user.",
                 "operationId": "bookingsDestroy",
                 "parameters": [
                     {
@@ -667,7 +663,6 @@
                     "Stations"
                 ],
                 "summary": "List stations",
-                "description": "GET /stations — list all stations.\nPublic endpoint, no authentication required.",
                 "operationId": "stationsIndex",
                 "responses": {
                     "200": {
@@ -743,7 +738,6 @@
                     "Trips"
                 ],
                 "summary": "List trips",
-                "description": "GET /trips — list all trips.\nPublic endpoint, no authentication required.",
                 "operationId": "tripsIndex",
                 "responses": {
                     "200": {
@@ -814,7 +808,6 @@
                     "Trips"
                 ],
                 "summary": "Get trip details",
-                "description": "GET /trips/{trip} — show a single trip.\nPublic endpoint, no authentication required.",
                 "operationId": "tripsShow",
                 "parameters": [
                     {
@@ -896,7 +889,6 @@
                     "Trips"
                 ],
                 "summary": "Get available seats for a trip between two stations",
-                "description": "GET /trips/{trip}/available-seats?start_station_id=&end_station_id=\nPublic endpoint, no authentication required.",
                 "operationId": "tripsAvailableSeats",
                 "parameters": [
                     {
