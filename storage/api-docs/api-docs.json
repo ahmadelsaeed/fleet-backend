@@ -98,6 +98,226 @@
                     }
                 }
             }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "operationId": "authLogout",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/EmptyData"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register user",
+                "operationId": "authRegister",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login Successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AuthTokenData"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid data"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/me": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get authenticated user profile",
+                "operationId": "profileMe",
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User profile retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -118,6 +338,78 @@
                 },
                 "type": "object"
             },
+            "Booking": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "trip": {
+                        "$ref": "#/components/schemas/Trip"
+                    },
+                    "seat_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "start_trip_stop_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "end_trip_stop_id": {
+                        "type": "integer",
+                        "example": 4
+                    }
+                },
+                "type": "object"
+            },
+            "BookingStoreRequest": {
+                "required": [
+                    "trip_id",
+                    "seat_id",
+                    "start_station_id",
+                    "end_station_id"
+                ],
+                "properties": {
+                    "trip_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "seat_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "start_station_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "end_station_id": {
+                        "type": "integer",
+                        "example": 4
+                    }
+                },
+                "type": "object"
+            },
+            "BookingsList": {
+                "required": [
+                    "bookings"
+                ],
+                "properties": {
+                    "bookings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Booking"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "EmptyData": {
+                "properties": {},
+                "type": "object"
+            },
             "LoginRequest": {
                 "required": [
                     "login",
@@ -132,6 +424,150 @@
                         "type": "string",
                         "format": "password",
                         "example": "secret123"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+201234567890"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret123"
+                    }
+                },
+                "type": "object"
+            },
+            "SeatAvailability": {
+                "required": [
+                    "seat_id",
+                    "available"
+                ],
+                "properties": {
+                    "seat_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "available": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "SeatsAvailabilityResponse": {
+                "required": [
+                    "trip_id",
+                    "start_station_id",
+                    "end_station_id",
+                    "seats"
+                ],
+                "properties": {
+                    "trip_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "start_station_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "end_station_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "seats": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SeatAvailability"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Station": {
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Central Station"
+                    }
+                },
+                "type": "object"
+            },
+            "StationsList": {
+                "required": [
+                    "stations"
+                ],
+                "properties": {
+                    "stations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Station"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Trip": {
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "departure_at": {
+                        "type": "string",
+                        "example": "2026-09-03T10:00:00Z"
+                    },
+                    "bus": {
+                        "type": "object"
+                    },
+                    "tripStops": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "TripsList": {
+                "required": [
+                    "trips"
+                ],
+                "properties": {
+                    "trips": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Trip"
+                        }
                     }
                 },
                 "type": "object"
@@ -173,6 +609,10 @@
         {
             "name": "Auth",
             "description": "Authentication"
+        },
+        {
+            "name": "Profile",
+            "description": "Profile"
         }
     ]
 }
