@@ -9,6 +9,10 @@
 /.cursor/
 /.idea
 /.nova
+/.ai
+/.claude
+/.junie
+/.kiro
 /.phpunit.cache
 /.vscode
 /.zed
