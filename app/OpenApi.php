@@ -6,8 +6,8 @@ use OpenApi\Attributes as OA;
 
 #[OA\Info(
     version: '1.0.0',
-    title: 'Company - Service',
-    description: 'Service documentation',
+    title: 'Fleet Management API',
+    description: 'This is a demo API for fleet management. It provides endpoints for managing trips.',
     contact: new OA\Contact(email: 'ahmad.elsaeed.ali@gmail.com'),
     license: new OA\License(
         name: 'Apache 2.0',

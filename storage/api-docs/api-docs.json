@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Company - Service",
-        "description": "Service documentation",
+        "title": "Fleet Management API",
+        "description": "This is a demo API for fleet management. It provides endpoints for managing trips.",
         "contact": {
             "email": "ahmad.elsaeed.ali@gmail.com"
         },
