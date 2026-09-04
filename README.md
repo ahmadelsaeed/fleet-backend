@@ -1,58 +1,145 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Fleet Management Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel 13 API for managing stations, trips, seat availability, and bookings, with token-based authentication via Laravel Sanctum.
 
-## About Laravel
+## Environment requirements
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP **8.3+** (project targets modern Laravel; PHP 8.4 also works)
+- Composer **2.x**
+- Node.js **18+** and npm
+- Database:
+  - **SQLite** for local setup (default in `.env.example`)
+  - **MySQL** configured for tests (`phpunit.xml` currently points to a MySQL `buses` database)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Install and run the backend application
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Install PHP dependencies:
+   ```bash
+   composer install
+   ```
+2. Create the environment file:
+   ```bash
+   cp .env.example .env
+   ```
+   On Windows PowerShell:
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+3. Generate the application key:
+   ```bash
+   php artisan key:generate
+   ```
+4. Run migrations and seeders:
+   ```bash
+   php artisan migrate --seed
+   ```
 
-## Learning Laravel
+## Database setup
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### MySQL
+1. Create a database (example: `buses`).
+2. Update `.env`:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=buses
+   DB_USERNAME=your_user
+   DB_PASSWORD=your_password
+   ```
+3. Run:
+   ```bash
+   php artisan migrate --seed
+   ```
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Seeded data
 
-## Agentic Development
+`DatabaseSeeder` loads:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- stations
+- buses
+- seats
+- trips
+- trip stops
+- users
+- bookings
 
-```bash
-composer require laravel/boost --dev
+## Migrations and seeders
 
-php artisan boost:install
-```
+- Run migrations:
+  ```bash
+  php artisan migrate
+  ```
+- Run seeders:
+  ```bash
+  php artisan db:seed
+  ```
+- Fresh reset + seed:
+  ```bash
+  php artisan migrate:fresh --seed
+  ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Run automated tests
 
-## Contributing
+This project uses **Pest** on top of Laravel’s testing layer.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Run all tests:
+  ```bash
+  php artisan test --compact
+  ```
+- Or directly with Pest:
+  ```bash
+  vendor/bin/pest
+  ```
 
-## Code of Conduct
+> Note: `phpunit.xml` is configured with `DB_CONNECTION=mysql` and `DB_DATABASE=buses` for tests. Ensure that test database exists and credentials are available in your environment.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## API usage and testing
 
-## Security Vulnerabilities
+### Base URL
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Local API base (Laravel default): `http://127.0.0.1:8000/api`
 
-## License
+### Main endpoints (v1)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Public:
+
+- `POST /api/register`
+- `POST /api/login`
+- `GET /api/stations`
+- `GET /api/trips`
+- `GET /api/trips/{trip}`
+- `GET /api/trips/{trip}/available-seats`
+
+Authenticated (`auth:sanctum`):
+
+- `POST /api/logout`
+- `GET /api/me`
+- `GET /api/bookings`
+- `POST /api/bookings`
+- `GET /api/bookings/{booking}`
+- `DELETE /api/bookings/{booking}`
+
+### Authentication flow
+
+1. Register or login.
+2. Read token from response (`data.token`).
+3. Send it on protected routes:
+   ```http
+   Authorization: Bearer <token>
+   ```
+
+### API documentation
+
+The project includes `darkaonline/l5-swagger` and OpenAPI operation/schema classes under `app/OpenApi/**`, indicating API documentation is annotation/attribute-driven and can be generated via L5 Swagger tooling.
+
+You can view the generated Swagger UI at `/api/documentation` when the app is running.
+## Important backend architectural / technical decisions
+
+- **API versioning**: controllers are organized under `App\Http\Controllers\API\V1`.
+- **Token auth**: Laravel Sanctum personal access tokens secure protected endpoints.
+- **Service layer for seat logic**: `SeatAvailabilityService` centralizes route validation and overlap conflict detection.
+- **Transactional booking creation**: booking creation runs in a DB transaction and locks relevant seat bookings to prevent race-condition double booking.
+- **Resource responses**: API Resources (`app/Http/Resources/**`) normalize response payloads.
+- **OpenAPI-first structure**: dedicated classes in `app/OpenApi/**` keep endpoint contracts explicit.

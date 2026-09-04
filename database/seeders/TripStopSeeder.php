@@ -22,9 +22,18 @@ class TripStopSeeder extends Seeder
         $this->createRoute('003', [
             'Cairo', 'Al Fayyum', 'Asyut',
         ]);
-
         $this->createRoute('004', [
-            'Giza', 'Al Fayyum', 'Al Minya', 'Asyut',
+            'Cairo', 'Al Fayyum', 'Asyut',
+        ]);
+
+        $this->createRoute('005', [
+            'Al Fayyum', 'Al Minya', 'Asyut',
+        ]);
+        $this->createRoute('006', [
+            'Cairo', 'Al Fayyum', 'Asyut',
+        ]);
+        $this->createRoute('007', [
+            'Cairo', 'Al Fayyum', 'Asyut',
         ]);
     }
 

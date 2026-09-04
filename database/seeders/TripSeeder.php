@@ -30,5 +30,22 @@ class TripSeeder extends Seeder
             ['code' => '004'],
             ['bus_id' => $busOne->id, 'date' => now()->addDays(2)->toDateString()]
         );
+        Trip::firstOrCreate(
+            ['code' => '007'],
+            ['bus_id' => $busOne->id, 'date' => now()->toDateString()]
+        );
+        Trip::firstOrCreate(
+            ['code' => '006'],
+            ['bus_id' => $busTwo->id, 'date' => now()->toDateString()]
+        );
+
+        Trip::firstOrCreate(
+            ['code' => '004'],
+            ['bus_id' => $busTwo->id, 'date' => now()->toDateString()]
+        );
+        Trip::firstOrCreate(
+            ['code' => '005'],
+            ['bus_id' => $busOne->id, 'date' => now()->addDays(3)->toDateString()]
+        );
     }
 }
